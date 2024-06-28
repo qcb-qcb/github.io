@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>不好笑的笑话</title>
+</head>
+<body>
+    <p class="content"></p>
+    请输入一个名字：<input type="text" class="text1"></input>
+    <button type="button" id="button1" class="generate">点击生成笑话</button>
+</body>
+<script>
+    var content = '这句话会展现出来';
+    var joke = generateJoke();
+    btn = document.querySelector("#button1");
+    btn.addEventListener('click', clickButton);
+    
+    function generateJoke() {
+
+        var targetUsers = ['戚超博', '刘恒旭', '林俊江', '黄文杰', '陈凯翔'];
+        var places = ['111', '121', '131', '141', '151', ];
+        var actions = ['打无畏契约', '打英雄联盟', '打麻将', '打王者', ];
+
+        var targetUser = getElement(targetUsers);
+        var place = getElement(places);
+        var action = getElement(actions);
+        var sourceUser = document.querySelector(".text1").value || '小H';
+        
+        var joke = `今天气温 ${ Math.floor(Math.random() * 35) } 摄氏度，${targetUser}正在上课。当下课铃一响，${targetUser}就飞奔回${place}，${action}。同学们们都惊呆了，${sourceUser}全程目睹但并没有惊讶，因为${targetUser}是一个菜鸡，又菜又爱玩。`;
+        console.log(joke);
+        return joke;
+    }
+
+    function getElement(arr) {
+        
+        var index = Math.floor(Math.random() * arr.length);
+        return arr[index];
+    }
+
+    function clickButton() {
+       var p = document.querySelector(".content");
+       console.log(p);
+        content = generateJoke();
+        p.innerHTML = content;
+    }
+</script>
+</html>
