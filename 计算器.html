@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>计算器</title>
+
+  <style type="text/css">
+
+    .calc .panel .digit {
+
+      float: left;
+
+    }
+
+
+
+    .calc .panel .digit {
+
+      margin: 0 auto;
+
+    }
+
+
+
+    .calc .panel .digit {
+
+      text-align: center;
+
+    }
+
+
+
+    .show input {
+
+      display: none;
+
+    }
+
+
+
+    .show #inputBlock,
+
+    .show #OutputBlock {
+
+      position: relative;
+
+    }
+
+
+
+    .show #inputBlock #stack1,
+
+    .show #OutputBlock #stack2 {
+
+      position: absolute;
+
+    }
+
+
+
+    .clearfix:before,
+
+    .clearfix:after {
+
+      content: "";
+
+      display: table;
+
+    }
+
+
+
+    .clearfix:after {
+
+      clear: both;
+
+      overflow: hidden;
+
+    }
+
+
+
+    .calc {
+
+      width: 250px;
+
+    }
+
+
+
+    .calc .panel .digit {
+
+      width: 50px;
+
+      height: 40px;
+
+      background-color: #e6e6e6;
+
+      color: black;
+
+      font-family: 'Microsoft YaHei', Verdana, Arial, Helvetica, sans-serif;
+
+      font-weight: bold;
+
+      line-height: 40px;
+
+    }
+
+
+
+    .calc .panel .digit:hover {
+
+      background-color: #cfcfcf;
+
+    }
+
+
+
+    .show {
+
+      background-color: #f2f2f2;
+
+      height: 80px;
+
+    }
+
+
+
+    .show #inputBlock {
+
+      height: 50px;
+
+    }
+
+
+
+    .show #inputBlock #stack1 {
+
+      font-family: 'Microsoft YaHei', Verdana, Arial, Helvetica, sans-serif;
+
+      font-weight: bold;
+
+      line-height: 50px;
+
+      bottom: 0px;
+
+    }
+
+
+
+    .show #OutputBlock {
+
+      height: 30px;
+
+    }
+
+
+
+    .show #OutputBlock #stack2 {
+
+      bottom: 0px;
+
+      color: #0066cc;
+
+    }
+
+  </style>
+
+</head>
+
+
+
+<body>
+
+  <!-- 计算器 -->
+
+  <div class="calc">
+
+    <div class="show">
+
+      <input type="text" id="formula">
+
+      <div id="OutputBlock"><span id="stack2"></span></div>
+
+      <div id="inputBlock"><span id="stack1"></span></div>
+
+    </div>
+
+    <div class="panel clearfix">
+
+      <div class="digit">NEG</div>
+
+      <div class="digit">CE</div>
+
+      <div class="digit">C</div>
+
+      <div class="digit">NEW</div>
+
+      <div class="digit">/</div>
+
+      <div class="digit">PI</div>
+
+      <div class="digit">7</div>
+
+      <div class="digit">8</div>
+
+      <div class="digit">9</div>
+
+      <div class="digit">*</div>
+
+      <div class="digit">n!</div>
+
+      <div class="digit">4</div>
+
+      <div class="digit">5</div>
+
+      <div class="digit">6</div>
+
+      <div class="digit">-</div>
+
+      <div class="digit">ANS</div>
+
+      <div class="digit">1</div>
+
+      <div class="digit">2</div>
+
+      <div class="digit">3</div>
+
+      <div class="digit">+</div>
+
+      <div class="digit">(</div>
+
+      <div class="digit">)</div>
+
+      <div class="digit">0</div>
+
+      <div class="digit">.</div>
+
+      <div class="digit">=</div>
+
+    </div>
+
+  </div>
+
+</body>
+
+
+
+<script type="text/javascript">
+
+
+
+  // 初始化
+
+  // 上面那一行
+
+  var stack1;
+
+  // 按的操作符
+
+  var op;
+
+  // 下面那一行
+
+  var stack2 = [];
+
+  // 结果
+
+  var ans;
+
+
+
+  // 显示你按下的按钮
+
+  //  1. 获得按下的按钮
+
+  var btns = document.querySelectorAll('.digit');
+
+  //  2. 绑定点击事件
+
+  for (var i = 0; i < btns.length; i++) {
+
+    btns[i].addEventListener('click', (event) => {
+
+      foo(event, stack1);
+
+    });
+
+  }
+
+
+
+
+
+  init();
+
+  renderOutput(stack1.join(""));
+
+  // 点击之后做的事情
+
+  function foo(event, stack1) {
+
+    // 如果我按了C
+
+    if (event.target.innerHTML == 'C' || event.target.innerHTML == 'CE') {
+
+      // 初始化stack1
+
+      init();
+
+      // 展示 stack1
+
+      renderOutput();
+
+    } else if(event.target.innerHTML == '=') {
+
+      // 如果按了=符号，将stack1 op stack2
+
+      // 将stack1变成字符串
+
+      var num1 = toNum(stack1);
+
+      // 将stack2变成字符串
+
+      var num2 = toNum(stack2);
+
+      // 计算结果
+
+      ans = eval(num2 + op + num1);
+
+      // 显示结果 stack1 => ans
+
+      stack1 = ans.toString().split('');
+
+      console.log('stack1', stack1);
+
+      renderOutput1(stack1);
+
+      // console.log('结果是', ans);
+
+      op = '=';
+
+    }
+
+    else {
+
+      // 如果按了 + - * / 中的一个
+
+      if (event.target.innerHTML == '+' || event.target.innerHTML == '-' || event.target.innerHTML == '*' || event.target.innerHTML == '/') {
+
+        if (stack1[0] != '0' && stack2[0] != '0') {
+
+          // 如果按了=符号，将stack1 op stack2
+
+          // 将stack1变成字符串
+
+          var num1 = toNum(stack1);
+
+          // 将stack2变成字符串
+
+          var num2 = toNum(stack2);
+
+          // 计算结果
+
+          ans = eval(num2 + op + num1);
+
+          // 显示结果 stack1 => ans
+
+          stack1 = ans.toString().split('');
+
+          console.log('stack1', stack1);
+
+          stack2 = [].concat(stack1);
+
+          op = event.target.innerHTML;
+
+          renderOutput1(stack1);
+
+          // console.log('结果是', ans);  
+
+          init1();
+
+        } else {
+
+          if (op == '=') {
+
+            stack2 = ans.toString().split('');
+
+            op = event.target.innerHTML;
+
+            init1();
+
+            renderOutput();
+
+            return;
+
+          }
+
+          // 初始化 stack1
+
+          init();
+
+          // 把下面的内容放到上面
+
+          stack2 = [].concat(stack1);
+
+          //  给操作符赋值
+
+          op = event.target.innerHTML;
+
+          renderOutput();
+
+        }
+
+      } else {
+
+        // 如果只有一个零，那么我就把零去掉，变成输入的数值
+
+        if (stack1.length == 1 && stack1[0] == '0') {
+
+          // 把零去掉
+
+          stack1.pop();
+
+        }
+
+        // 将点击后的内容放在一起，显示出来
+
+        // 将按到的值 添加到 stack1 数组中
+
+        stack1.push(event.target.innerHTML);
+
+        // 展示 算式
+
+        renderOutput();
+
+      }
+
+    }
+
+  }
+
+
+
+  function renderOutput1(stack1) {
+
+    document.querySelector("#stack1").innerHTML = stack1.join("");
+
+    if (op != null) {
+
+      document.querySelector("#stack2").innerHTML = stack2.join("") + ' ' + op;
+
+    }
+
+    // 当stack2没有数的时候
+
+    if (stack2.length == 1 && stack2[0] == '0') {
+
+      document.querySelector("#stack2").innerHTML = '';
+
+    }
+
+  }
+
+
+
+  // 渲染输出
+
+  function renderOutput() {
+
+    document.querySelector("#stack1").innerHTML = stack1.join("");
+
+    if (op != null) {
+
+      document.querySelector("#stack2").innerHTML = stack2.join("") + ' ' + op;
+
+    }
+
+    // 当stack2没有数的时候
+
+    if (stack2.length == 1 && stack2[0] == '0') {
+
+      document.querySelector("#stack2").innerHTML = '';
+
+    }
+
+  }
+
+
+
+  // 初始化stack1
+
+  function init1() {
+
+    stack1 = [0];
+
+  }
+
+  // 初始化stack2
+
+  function init2() {
+
+    stack2 = [0];
+
+  }
+
+  // 初始化全部 
+
+  function init() {
+
+    init2();
+
+    init1();
+
+  }
+
+  // 将数组变成数字
+
+  function toNum(arr) {
+
+    return parseInt(arr.join(''));
+
+  }
+
+</script>
+
+
+
+</html>
